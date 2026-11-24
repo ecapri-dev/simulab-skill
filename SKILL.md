@@ -1,6 +1,6 @@
 ---
 name: simulab
-description: Turn any idea, from any niche, into an interactive isometric 3D lab (one offline HTML page) and a 60 fps video with sound. The viewer watches it build itself, steps through guided chapters (wrong way, right way, too much), turns a knob or presses a key to break it, and every number on screen comes from one sourced model. Works for cooking, coffee, sports, fishing, finance, biology, machines, electronics, software, a hobby or a job. Use when someone asks to explain how something works visually, wants a "simulator", "lab", "interactive explainer", "visual learning" piece, or wants an idea or project shown working instead of described.
+description: Turn any idea, from any niche, into an interactive isometric 3D lab (one offline HTML page) and a 60 fps video with sound. The viewer watches it build itself, steps through guided chapters (wrong way, right way, too much), turns a knob or presses a key to break it, and every number on screen comes from one sourced model. Works for cooking, coffee, sports, fishing, finance, biology, machines, electronics, software, a hobby or a job. Poster mode turns a real machine (a car, an engine, a reactor, an appliance) into a realistic "HOW IT WORKS" poster: live 3D with studio light, a cutaway, 6 live readouts and a 36 s loop. Use when someone asks to explain how something works visually, wants a "simulator", "lab", "interactive explainer", "visual learning" piece, or wants an idea or project shown working instead of described.
 ---
 
 # SIMULAB
@@ -17,7 +17,7 @@ cd "$SKILL_DIR" && npm install && pip install -r requirements.txt && npx playwri
 
 The page needs nothing else. The video needs `ffmpeg` on PATH; the sound needs Python 3 with numpy and scipy.
 
-## The 6 examples
+## The 7 examples
 
 Open one before you start and copy the closest.
 
@@ -28,6 +28,7 @@ Open one before you start and copy the closest.
 | `demos/lab02-multimetro` | Tools | What are the 10 functions of a multimeter? | The dial | One chapter per function, everyday objects as the things being measured. |
 | `demos/lab01-sonar` | Robotics | How does a robot hear a wall? | Distance to the wall | A sound wave packet and its echo, a threshold you move. |
 | `demos/blink` | Code | How does your Arduino blink an LED? | Time | The template: 6 parts, auto-routed wires, a code tab. |
+| `demos/lab25-f1` | Machines (poster mode) | How does a 2026 F1 car split its power? | Lap sequence | Realistic 3D poster: V6, turbo, MGU-K and battery in a cutaway, moving wings, energy flows, step clips for tutorials. |
 | `demos/catalogo` | | Every asset on one mat | | Check an asset before you use it. |
 
 ```
@@ -77,6 +78,29 @@ bash "$SKILL_DIR/tools/video.sh" labs/<lab> <name>                             #
 node "$SKILL_DIR/tools/cover.mjs" labs/<lab>                                   # cover.jpg 1200x630
 ```
 
+## Poster mode: a real machine, "HOW IT WORKS" (kit3d)
+
+Use it when the topic is a machine or a system with parts you can see: a car, an engine, a reactor, an appliance, a tool. The result is an A4 poster (1080 x 1528) with a live three.js render (studio light, soft shadows, procedural paint, brushed metal, rubber and copper textures), a title with one word and a number ("Apex 1"), the question and a paragraph, 6 live readouts, a 2D schematic, a sequence dial, 8 numbered parts and a footer. The loop is 36 s: every part snaps into place in about 1 s, then 6 stations of 4.7 s each move the parts that explain the machine, then LINE shows everything at once. The example is `demos/lab25-f1`; `kit3d/README.md` has the details.
+
+1. **Spec sheet before code.** One question, the 8 parts that explain the machine with real sizes, position and material, one fixed scale (F1: 1 unit = 5 cm), what moves and which number changes in each of the 6 stations, the part shown in cutaway and what is really inside it, 6 readouts. Every number with its source; the rest labelled as an assumption in the `note` of `demo.json` and in `datos.md`.
+2. **Copy the example.** `cp -r "$SKILL_DIR/demos/lab25-f1" labs/<lab>`; keep `"kit": "poster3d"` and `"fps": 24` in `demo.json`.
+3. **`demo.js`**, in this order: texts `{ en, es }`; station times `T`; the model as keyed values (`keys(t, [[t, v], ...])`) and `state(t)` with `K3.stage`; `build(K)` with one `K.part(id, obj, { t, num, anchor })` per numbered part, made from `box`, `cyl`, `lathe`, `cutLathe` (the cutaway: open quarter toward the camera, orange caps), `tube`, `plate`, `fins`, `bolt` and `K3P` (`strut`, `flow`, `spray`, `gear`, `bladeRing`); `update(K, st, t)` for what moves; `camera(t)` with one `K.look(target, az, el, dist)` per station; `schematic.draw` for the 2D panel.
+4. **Mark small detail** (bolts, hoses, fins, cables) with `K.detail(obj)`, so the blockout stage shows only the big shapes.
+5. **Motion is a function of t.** Integrate angles from the speed history inside `update`, so any second you seek looks the same. Spin parts slower than real and say so in the note.
+6. **Review** with `tools/smoke.mjs` and a contact sheet. Look for overlaps from the top: no part, cable or label may cover another.
+7. **Stages for tutorials.** `tools/steps.mjs` renders the 3D view alone as a short clip: `--mode=block` (big shapes, clay), `grey` (all detail, clay), `wire` (mesh lines), `closed` (cutaways closed), or the final look. Same code, one flag.
+8. **Video.** `video.sh` records 1080 x 1528 at the demo's fps. A poster render keeps its 3D frames in `render/gl/`, so an interrupted render resumes where it stopped.
+
+```
+node "$SKILL_DIR/tools/build.mjs" labs/<lab>
+node "$SKILL_DIR/tools/smoke.mjs" "$PWD/labs/<lab>"
+node "$SKILL_DIR/tools/stills.mjs" labs/<lab> --w=540 --cols=4 1.4 4 8.5 13 18 22.5 27 33
+node "$SKILL_DIR/tools/steps.mjs" labs/<lab> --mode=block --t0=33 --az0=-22 --az1=18 --n=72 --w=960
+bash "$SKILL_DIR/tools/video.sh" labs/<lab> <name>
+```
+
+Taste: white page, cream bench with a brass plaque, camera on the +z side (az 30 is a 3/4 front view), one paint colour for the body, steel, copper and brass for what is machined, signal orange only on 2 or 3 parts and on the cut faces. No downloaded models or textures, no third-party logos: draw your own design and say "generic, not a real team or brand" in the note.
+
 ## Review checklist
 
 - **Nothing overlaps.** No part, wire, label or card covers another in any frame.
@@ -99,4 +123,4 @@ Write the lab's text in the user's language. `?lang=en|pt|ja|zh|ko|ru` translate
 
 ## Credits
 
-Engine, assets and tools from KAPRI LAB by @0xKapri. Fonts under the SIL Open Font License (`kit/fonts/LICENSE-*`). MIT licence.
+Engine, assets and tools from KAPRI LAB by @0xKapri. Poster mode bundles three.js r170 (MIT) in `kit3d/vendor`. Fonts under the SIL Open Font License (`kit/fonts/LICENSE-*`). MIT licence.

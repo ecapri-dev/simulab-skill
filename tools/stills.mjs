@@ -11,12 +11,12 @@ mkdirSync(join(dir, 'shots'), { recursive: true });
 const browser = await launch();
 const page = await browser.newPage({ viewport: { width: 1600, height: 1280 } });
 const errs = []; page.on('pageerror', e => errs.push(e.message)); page.on('console', m => { if (m.type() === 'error') errs.push(m.text()); });
-await page.goto('file://' + join(dir, 'dist/index.html') + `?render&w=${full ? 1600 : W}`);
+await page.goto('file://' + join(dir, 'dist/index.html') + `?render&w=${full ? 1600 : W}`, { timeout: 180000 });
 await page.waitForFunction(() => window.READY === true, null, { timeout: 30000 }).catch(() => {});
 const dur = await page.evaluate(() => window.DURATION && window.DURATION());
 console.log('duration', dur && dur.toFixed(2));
 const sheet = await page.evaluate(async ([times, W, COLS, full]) => {
-  const H = Math.round(W * 0.8), rows = Math.ceil(times.length / COLS), sc = document.createElement('canvas');
+  const H = Math.round(W * (window.ASPECT || 0.8)), rows = Math.ceil(times.length / COLS), sc = document.createElement('canvas');
   sc.width = W * COLS; sc.height = H * rows; const sx = sc.getContext('2d'); const src = document.getElementById('stage'); const fulls = [];
   times.forEach((t, i) => { window.seek(t); sx.drawImage(src, (i % COLS) * W, Math.floor(i / COLS) * H, W, H); sx.fillStyle = '#000a'; sx.fillRect((i % COLS) * W, Math.floor(i / COLS) * H, 70, 22); sx.fillStyle = '#fff'; sx.font = '700 14px monospace'; sx.fillText(t.toFixed(1) + ' s', (i % COLS) * W + 6, Math.floor(i / COLS) * H + 16); if (full) fulls.push(src.toDataURL('image/jpeg', 0.9)); });
   return { sheet: sc.toDataURL('image/jpeg', 0.85), fulls };

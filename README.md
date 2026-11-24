@@ -12,6 +12,21 @@
 | **Robótica / Robotics** | **Código / Code** | |
 | ![Lab 01 Sonar](docs/lab01-sonar.jpg) | ![Lab 00 Blink](docs/blink.jpg) | |
 
+## Modo póster: máquinas reales / Poster mode: real machines
+
+**ES** · Para máquinas con piezas (autos, motores, reactores, aparatos): un póster A4 "HOW IT WORKS" con 3D realista en vivo, un corte para ver por dentro, 6 lecturas en vivo y un loop de 36 s donde la máquina se arma en un segundo y luego se mueve estación por estación. Ejemplo: `demos/lab25-f1`, un F1 con las reglas 2026. `tools/steps.mjs` saca un clip de cada etapa del modelado (bloqueo, gris, malla, cerrado y final) para tutoriales.
+
+**EN** · For machines with parts (cars, engines, reactors, appliances): an A4 "HOW IT WORKS" poster with live realistic 3D, a cutaway, 6 live readouts and a 36 s loop where the machine builds itself in one second and then moves station by station. Example: `demos/lab25-f1`, a Formula 1 car under the 2026 rules. `tools/steps.mjs` renders one clip per modelling stage (blockout, clay, wireframe, closed and final) for tutorials.
+
+![Lab 25 · Apex 1: un F1 2026 en corte / a 2026 F1 car in cutaway](docs/lab25-f1.jpg)
+
+```
+node tools/build.mjs demos/lab25-f1                                   # -> demos/lab25-f1/dist/index.html
+node tools/steps.mjs demos/lab25-f1 --mode=block --t0=33 --az0=-22 --az1=18 --n=72 --w=960
+```
+
+Prompts del modo póster: sección 8 de [PROMPTS.md](PROMPTS.md). / Poster-mode prompts: section 8 of [PROMPTS.md](PROMPTS.md).
+
 ## Instalar / Install
 
 ```
@@ -24,7 +39,7 @@ Después, una vez, en la carpeta instalada / Then, once, in the installed folder
 cd ~/.claude/skills/simulab && npm install && pip install -r requirements.txt && npx playwright install chromium
 ```
 
-Necesitas Node.js 20 o más nuevo, Python 3 y Chrome. Para el video, `ffmpeg`.
+Necesitas Node.js 20 o más nuevo, Python 3 y Chrome. Para el video, `ffmpeg`. El modo póster usa three.js (MIT), ya incluido en `kit3d/vendor`.
 You need Node.js 20 or newer, Python 3 and Chrome. For the video, `ffmpeg`.
 
 ## Usar / Use

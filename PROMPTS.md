@@ -125,6 +125,89 @@ Render the preview first with tools/video.sh --preview and review it.
 If it is clean, render the final video and the cover with tools/cover.mjs.
 ```
 
+## 8. Modo póster: una máquina real / Poster mode: a real machine
+
+Para máquinas y sistemas con piezas (autos, motores, reactores, aparatos). Ejemplo: `demos/lab25-f1`.
+For machines and systems with parts (cars, engines, reactors, appliances). Example: `demos/lab25-f1`.
+
+**8.1 La ficha / The spec sheet · ES**
+```
+/simulab Modo póster. Quiero un lab de [un auto de F1 con las reglas 2026].
+Antes de modelar, escríbeme la ficha:
+1. Una pregunta de una línea que el lab responda.
+2. Las 8 piezas que explican la máquina, con medidas reales, posición y material. Escala: 1 unidad = [5 cm].
+3. Las 6 estaciones del loop de 36 s: qué se mueve en cada una y qué número cambia.
+4. Qué pieza va en corte y qué hay adentro de verdad.
+5. 6 lecturas en vivo, con unidad.
+Cada número con su fuente y link. Lo que no tenga fuente va como supuesto. No inventes fuentes.
+```
+
+**EN**
+```
+/simulab Poster mode. I want a lab about [a Formula 1 car under the 2026 rules].
+Before modelling, write the spec sheet:
+1. A one-line question the lab answers.
+2. The 8 parts that explain the machine, with real sizes, position and material. Scale: 1 unit = [5 cm].
+3. The 6 stations of the 36 s loop: what moves in each one and which number changes.
+4. Which part is shown in cutaway and what is really inside it.
+5. 6 live readouts, with units.
+Every number with its source and a link. Anything without a source is an assumption. Do not invent sources.
+```
+
+**8.2 El bloqueo / The blockout · ES**
+```
+Copia demos/lab25-f1 a labs/[lab01-f1] y arma solo las formas grandes de la ficha con box, cyl, lathe y cutLathe, cada pieza con K.part y su número.
+Marca pernos, mangueras y aletas con K.detail().
+Enséñame el bloqueo con tools/steps.mjs --mode=block y dime desde arriba qué piezas se enciman o flotan. Corrígelo con números, no con la cámara.
+```
+
+**EN**
+```
+Copy demos/lab25-f1 to labs/[lab01-f1] and build only the big shapes from the spec with box, cyl, lathe and cutLathe, one K.part per numbered part.
+Mark bolts, hoses and fins with K.detail().
+Show me the blockout with tools/steps.mjs --mode=block and tell me, from the top view, which parts overlap or float. Fix it with numbers, not with the camera.
+```
+
+**8.3 Detalle, materiales y corte / Detail, materials and cutaway · ES**
+```
+Agrega el detalle (biseles, pernos, mangueras, aletas) y la paleta: pintura para la carrocería, acero, cobre y latón para lo maquinado, y naranja solo en 2 o 3 piezas. Nada de modelos ni texturas descargadas.
+Corta [la cubierta del motor] con cutLathe: el hueco ve hacia la cámara y las caras del corte van en naranja. Adentro modela lo que sí existe: [V6, turbo, MGU-K, batería y caja].
+Enséñame --mode=grey, --mode=closed y el render final de la misma toma.
+```
+
+**EN**
+```
+Add the detail (bevels, bolts, hoses, fins) and the palette: paint for the body, steel, copper and brass for machined parts, orange on only 2 or 3 parts. No downloaded models or textures.
+Cut [the engine cover] with cutLathe: the opening faces the camera and the cut faces are orange. Inside, model what really exists: [V6, turbo, MGU-K, battery and gearbox].
+Show me --mode=grey, --mode=closed and the final render of the same shot.
+```
+
+**8.4 El movimiento / The motion · ES**
+```
+En update() mueve cada pieza en su estación: [los flaps se abren en recta y se cierran en curva], pulsos con K3P.flow para [la energía, el aire y el escape] y brillo para [los frenos].
+Los ángulos salen de integrar la velocidad, para que cualquier segundo del video se vea igual.
+Una toma por estación con K.look. Revisa una hoja de contacto en 1.4, 4, 8.5, 13, 18, 22.5, 27 y 33 s.
+```
+
+**EN**
+```
+In update(), move each part in its station: [flaps open on the straight and close in the corner], K3P.flow pulses for [energy, air and exhaust], glow for [the brakes].
+Angles come from integrating the speed, so any second of the video looks the same.
+One shot per station with K.look. Review a contact sheet at 1.4, 4, 8.5, 13, 18, 22.5, 27 and 33 s.
+```
+
+**8.5 El video y las etapas / The video and the stages · ES**
+```
+Saca el video con tools/video.sh y la portada con tools/cover.mjs.
+Para un tutorial, saca también un clip de cada etapa con tools/steps.mjs: block, grey, wire, closed y final.
+```
+
+**EN**
+```
+Render the video with tools/video.sh and the cover with tools/cover.mjs.
+For a tutorial, also render one clip per stage with tools/steps.mjs: block, grey, wire, closed and final.
+```
+
 ---
 
 ## Ideas por nicho / Ideas by niche

@@ -13,7 +13,7 @@ const b = await launch(), p = await b.newPage();
 for (const d of demos) {
   execFileSync('node', [join(root, 'tools/build.mjs'), join(root, 'demos', d)], { stdio: 'ignore' });
   const meta = JSON.parse(readFileSync(join(root, 'demos', d, 'demo.json'), 'utf8'));
-  await p.goto(`file://${join(root, 'demos', d, 'dist/index.html')}?render&web&w=1920`);
+  await p.goto(`file://${join(root, 'demos', d, 'dist/index.html')}?render&web&w=1920`, { timeout: 180000 });
   await p.waitForFunction(() => window.READY === true);
   const url = await p.evaluate(async ([tc, cy]) => {
     for (const f of ['drawPlate', 'drawSpeedBadge', 'drawChips', 'drawHandle', 'tipCard', 'bayPiezas']) if (typeof window[f] === 'function') window[f] = () => {};
